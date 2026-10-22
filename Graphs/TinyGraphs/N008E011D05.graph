@@ -1,0 +1,32 @@
+<Graph Name="N008E011D05" Type="Undirected">
+
+ <Nodes Origin="100,10,100" Scale="4.5">
+  <Node Position="  0,0,0" />
+  <Node Position=" 50,0,0" />
+  <Node Position="100,0,0" />
+
+  <Node Position="  0,0,60" />
+  <Node Position=" 50,0,50" />
+  <Node Position="100,0,60" />
+
+  <Node Position="  0,0,100" />
+  <Node Position=" 80,0,100" />
+ </Nodes>
+
+ <Edges>
+  <Edge Indices="0,1" />
+  <Edge Indices="1,2" />
+  <Edge Indices="0,3" />
+  <Edge Indices="1,4" />
+  <Edge Indices="2,5" />
+
+  <Edge Indices="3,4" />
+  <Edge Indices="4,5" />
+  <Edge Indices="3,5" />
+
+  <Edge Indices="3,6" />
+  <Edge Indices="5,7" />
+  <Edge Indices="6,7" />
+ </Edges>
+
+</Graph>

@@ -26,7 +26,7 @@ FPS = 120
 TEMPS_SIMULATION = 50 # en sec
 TEMPS_MAX = 10 # temps pr passer du vert au rouge
 
-vitesse_agents = 10
+VITESSE_AGENTS = 10
 
 
 class Liaison:
@@ -166,10 +166,10 @@ def ouvrir_graphe(chemin):
 
     if Poids_liaisons:
         poids_moyen = sum(Poids_liaisons) / len(Poids_liaisons)
-        global vitesse_agents
-        vitesse_agents = 4.0 * poids_moyen
+        global VITESSE_AGENTS
+        VITESSE_AGENTS = 4.0 * poids_moyen
     else:
-        vitesse_agents = 0.1
+        VITESSE_AGENTS = 0.1
 
     return Noeuds
 
@@ -246,7 +246,7 @@ def creer_agents(noeuds, nb_agents):
     for i in range(nb_agents):
         start = random.choice(noeuds)
         a = Agent(i, start)
-        a.vitesse = vitesse_agents
+        a.vitesse = VITESSE_AGENTS
         choisir_destination(a, Agents, TEMPS_SIMULATION)
         Agents.append(a)
     return Agents

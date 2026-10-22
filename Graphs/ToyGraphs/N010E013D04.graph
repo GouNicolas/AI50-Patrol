@@ -1,0 +1,38 @@
+<Graph Type="NonOriented">
+ <Nodes Origin="225.00,10.00,125.00" Scale="15.00">
+  <Node Position="   0, 0,   0" />
+  <Node Position=" 120, 0,   0" />
+
+  <Node Position="   0, 0,  60" />
+  <Node Position="  40, 0,  60" />
+  <Node Position=" 120, 0,  60" />
+
+  <Node Position="   0, 0, 100" />
+  <Node Position="  40, 0, 100" />
+
+  <Node Position="   0, 0, 140" />
+  <Node Position="  40, 0, 140" />
+  <Node Position=" 120, 0, 140" />
+ </Nodes>
+
+ <Edges>
+  <Edge Indices="0,1" />
+
+  <Edge Indices="0,2" />
+  <Edge Indices="1,4" />
+
+  <Edge Indices="2,3" />
+  <Edge Indices="3,4" />
+  <Edge Indices="4,9" />
+
+  <Edge Indices="2,5" />
+  <Edge Indices="3,6" />
+  <Edge Indices="5,6" />
+
+  <Edge Indices="5,7" />
+  <Edge Indices="6,8" />
+
+  <Edge Indices="7,8" />
+  <Edge Indices="8,9" />
+</Edges>
+</Graph>

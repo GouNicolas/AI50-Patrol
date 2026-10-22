@@ -1,0 +1,12 @@
+<Graph Type="NonOriented">
+ <Nodes Origin="100,10,100" Scale="1.0">
+  <Node Position=" 0,0,0" />
+  <Node Position=" 0,0,50" />
+  <Node Position=" 0,0,80" />
+ </Nodes>
+
+ <Edges>
+  <Edge Indices="0,1" />
+  <Edge Indices="1,2" />
+ </Edges>
+</Graph>

@@ -1,0 +1,65 @@
+<Graph Name="N020E026D04" Type="Undirected">
+
+ <Nodes Origin="100,10,100" Scale="4.5">
+  <Node Position="  0,0,0" />
+  <Node Position=" 50,0,0" />
+  <Node Position="100,0,0" />
+
+  <Node Position="130,0,0" />
+  <Node Position="230,0,0" />
+
+  <Node Position="  0,0,60" />
+  <Node Position=" 50,0,50" />
+  <Node Position="100,0,60" />
+  <Node Position="140,0,40" />
+  <Node Position="230,0,40" />
+
+  <Node Position="200,0,60" />
+
+  <Node Position="140,0,80" />
+  <Node Position="270,0,80" />
+
+  <Node Position="  0,0,100" />
+  <Node Position=" 80,0,100" />
+  <Node Position="140,0,100" />
+  <Node Position="170,0,100" />
+  <Node Position="270,0,100" />
+
+  <Node Position="110,0,120" />
+  <Node Position="170,0,120" />
+ </Nodes>
+
+ <Edges>
+  <Edge Indices="0,1" />
+  <Edge Indices="1,2" />
+  <Edge Indices="0,5" />
+  <Edge Indices="1,6" />
+  <Edge Indices="2,7" />
+  <Edge Indices="5,7" />
+
+  <Edge Indices="3,4" />
+  <Edge Indices="3,8" />
+  <Edge Indices="4,9" />
+
+  <Edge Indices="5,6" />
+  <Edge Indices="6,7" />
+
+  <Edge Indices="8,10" />
+  <Edge Indices="8,11" />
+  <Edge Indices="9,10" />
+
+  <Edge Indices="10,11" />
+  <Edge Indices="10,12" />
+
+  <Edge Indices="11,15" />
+  <Edge Indices="15,16" />
+  <Edge Indices="16,17" />
+  <Edge Indices="5,13" />
+  <Edge Indices="7,14" />
+  <Edge Indices="13,14" />
+  <Edge Indices="14,18" />
+  <Edge Indices="18,19" />
+  <Edge Indices="16,19" />
+  <Edge Indices="12,17" />
+ </Edges>
+</Graph>

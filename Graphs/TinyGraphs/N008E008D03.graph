@@ -1,0 +1,23 @@
+<Graph Name="N008E008D03" Type="NonOriented">
+ <Nodes Origin="100,10,100" Scale="4.5">
+  <Node Position=" 50,0,  0" />
+  <Node Position="  0,0, 50" />
+  <Node Position="  0,0,100" />
+  <Node Position=" 50,0, 50" />
+  <Node Position=" 50,0,100" />
+  <Node Position=" 75,0,150" />
+  <Node Position="100,0,100" />
+  <Node Position="100,0,150" />
+ </Nodes>
+
+ <Edges>
+  <Edge Indices="0,1" />
+  <Edge Indices="1,2" />
+  <Edge Indices="1,3" />
+  <Edge Indices="3,4" />
+  <Edge Indices="4,5" />
+  <Edge Indices="3,6" />
+  <Edge Indices="4,6" />
+  <Edge Indices="6,7" />
+ </Edges>
+</Graph>

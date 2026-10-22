@@ -1,0 +1,48 @@
+<Graph Name="Hub1" Type="Undirected">
+
+ <Nodes>
+  <Node Position="0,0,0" />
+  <Node Position="-500,0,0" />
+  <Node Position="500,0,0" />
+  <Node Position="0,0,-500" />
+  <Node Position="0,0,500" />
+  <Node Position="-550,0,-50" />
+  <Node Position="-520,0,60" />
+  <Node Position="-420,0,-50" />
+  <Node Position="-400,0,80" />
+  <Node Position="420,0,80" />
+  <Node Position="570,0,60" />
+  <Node Position="620,0,10" />
+  <Node Position="580,0,-20" />
+  <Node Position="410,0,-70" />
+  <Node Position="-80,0,-580" />
+  <Node Position="0,0,-580" />
+  <Node Position="80,0,-580" />
+  <Node Position="-80,0,580" />
+  <Node Position="0,0,580" />
+  <Node Position="80,0,580" />
+ </Nodes>
+
+ <Edges>
+  <Edge Indices="0,1" />
+  <Edge Indices="0,2" />
+  <Edge Indices="0,3" />
+  <Edge Indices="0,4" />
+  <Edge Indices="1,5" />
+  <Edge Indices="1,6" />
+  <Edge Indices="1,7" />
+  <Edge Indices="1,8" />
+  <Edge Indices="2,9" />
+  <Edge Indices="2,10" />
+  <Edge Indices="2,11" />
+  <Edge Indices="2,12" />
+  <Edge Indices="2,13" />
+  <Edge Indices="3,14" />
+  <Edge Indices="3,15" />
+  <Edge Indices="3,16" />
+  <Edge Indices="4,17" />
+  <Edge Indices="4,18" />
+  <Edge Indices="4,19" />
+ </Edges>
+
+</Graph>
