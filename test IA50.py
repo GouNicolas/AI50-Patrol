@@ -247,7 +247,7 @@ def creer_agents(noeuds, nb_agents):
         start = random.choice(noeuds)
         a = Agent(i, start)
         a.vitesse = VITESSE_AGENTS
-        choisir_destination(a, Agents, TEMPS_SIMULATION)
+        # supr choisir_destination(a, Agents, TEMPS_SIMULATION) car inutil + chiant avec les prog qui veult des init
         Agents.append(a)
     return Agents
 
@@ -275,10 +275,10 @@ def charger_algorithme(chemin, numero):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
 
-    return module.choisir_destination
+    return module #return modul et pas juste la fonction
 
 
-def executer_test(noeuds_base, positions_depart, algo, graine, temps_simulation):
+def executer_test(noeuds_base, positions_depart, algo, graine, temps_simulation, inclure_intervalles=False):
     random.seed(graine)
 
     Noeuds = copier_graphe(noeuds_base)
@@ -300,33 +300,67 @@ def executer_test(noeuds_base, positions_depart, algo, graine, temps_simulation)
         agent.vitesse = vitesse
         Agents.append(agent)
 
-    dt_max = 1.0 / FPS
+    #supr dt_max = 1.0 / FPS car plus pas de temps fix pareil pour la suite
     temps_ecoule = 0.0
 
     while temps_ecoule < temps_simulation:
-        dt = min(dt_max, temps_simulation - temps_ecoule)
+        #dt = min(dt_max, temps_simulation - temps_ecoule)
 
-        for n in Noeuds:
-            n.temps_non_visite += dt
+        #for n in Noeuds:
+            #n.temps_non_visite += dt
 
         for agent in Agents:
             if agent.destination is None:
                 algo(agent, Agents, temps_simulation)
 
-            agent.avancer(dt)
+            #agent.avancer(dt)
 
-        temps_ecoule += dt
+        #temps_ecoule += dt
+
+        #AJOUT : on cherche le temps du prochain event (agent qui trouv dest)
+        prochain_temps = temps_simulation
+        for agent in Agents:
+            if agent.destination is not None:
+                temps_restant = agent.temps_trajet_total - agent.temps_trajet_ecoule
+
+                # pour empécher pes dt = 0 à cause d'arondit de float
+                if temps_restant <= 0:
+                    agent.avancer(temps_restant) # Nettoie et met l'agent à sa destination
+                else:
+                    temps_arrivee = temps_ecoule + temps_restant
+                    if temps_arrivee < prochain_temps:
+                        prochain_temps = temps_arrivee
+
+
+        dt = prochain_temps - temps_ecoule
+        if dt <= 0:
+            dt = 0.001
+
+        for n in Noeuds:
+            n.temps_non_visite += dt
+
+        for agent in Agents:
+            if agent.destination is not None:
+                agent.avancer(dt)
+
+        temps_ecoule = prochain_temps
+
+        #temps_ecoule += dt
 
     Intervalles = []
     for n in Noeuds:
         Intervalles.extend(n.temps_visites)
 
     if not Intervalles:
+        if inclure_intervalles:
+            return None, None, []
         return None, None
 
     idleness_moyenne = sum(Intervalles) / len(Intervalles)
     idleness_max = max(Intervalles)
 
+    if inclure_intervalles:
+        return idleness_moyenne, idleness_max, Intervalles
     return idleness_moyenne, idleness_max
 
 
@@ -357,7 +391,116 @@ def afficher_bilan(nom, resultats):
         print("ancune visite enregister.")
 
 
-def comparer_algorithmes():
+#AJOUT
+import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+
+def visualiser_resultats(Resultats, graph=False, mode=1):
+    if not graph:
+        return
+
+    algos = list(Resultats.keys())
+
+    if mode == 1:
+        # MODE 1 : 2 abscisses (Idleness Moyenne et Maximum) avec des échelles séparées (twinx)
+        fig, ax1 = plt.subplots(figsize=(10, 6))
+        ax2 = ax1.twinx()
+
+        num_algos = len(algos)
+        width = 0.12  #réservation d'espace pour décaler les algos horizontalement
+
+        # Palette de couleurs automatique de matplotlib
+        colors = plt.cm.tab10(range(num_algos))
+
+        for i, (nom_algo, res_list) in enumerate(Resultats.items()):
+            moyennes = [r[0] for r in res_list if r[0] is not None]
+            maximums = [r[1] for r in res_list if r[1] is not None]
+
+            if not moyennes or not maximums:
+                continue
+
+            # Statistiques pour l'idleness moyenne
+            m_min = min(moyennes)
+            m_moy = sum(moyennes) / len(moyennes)
+            m_max = max(moyennes)
+
+            # Statistiques pour l'idleness maximum
+            M_min = min(maximums)
+            M_moy = sum(maximums) / len(maximums)
+            M_max = max(maximums)
+
+            # Décalage horizontal pour chaque algorithme pour éviter les superpositions
+            offset = (i - num_algos / 2) * width + width / 2
+            col = colors[i]
+
+            # --- Tracé sur l'axe de gauche (Idleness Moyenne) à x = 0 + offset ---
+            ax1.scatter([0 + offset], [m_min], color=col, marker='o', s=90, zorder=3)
+            ax1.scatter([0 + offset], [m_moy], color=col, marker='^', s=90, zorder=3)
+            ax1.scatter([0 + offset], [m_max], color=col, marker='s', s=90, zorder=3)
+
+            # --- Tracé sur l'axe de droite (Idleness Maximum) à x = 1 + offset ---
+            ax2.scatter([1 + offset], [M_min], color=col, marker='o', s=90, zorder=3)
+            ax2.scatter([1 + offset], [M_moy], color=col, marker='^', s=90, zorder=3)
+            ax2.scatter([1 + offset], [M_max], color=col, marker='s', s=90, zorder=3)
+
+            # Élément fictif pour la légende des algorithmes
+            ax1.plot([], [], color=col, marker='o', linestyle='None', markersize=8, label=nom_algo)
+
+        # Configuration des axes
+        ax1.set_xlim(-0.5, 1.5)
+        ax1.set_xticks([0, 1])
+        ax1.set_xticklabels(['Idleness Moyenne', 'Idleness Maximum'], fontsize=12, fontweight='bold')
+
+        ax1.set_ylabel("Échelle - Idleness Moyenne (secondes)", color='tab:blue', fontsize=10)
+        ax2.set_ylabel("Échelle - Idleness Maximum (secondes)", color='tab:orange', fontsize=10)
+
+        ax1.set_title("Comparaison des statistiques d'Idleness\n(Min: ○, Moyen: △, Max: □)", fontsize=13, fontweight='bold')
+        ax1.grid(True, linestyle='--', alpha=0.4)
+
+        # Légende des algorithmes
+        ax1.legend(title="Algorithmes", loc='upper left', framealpha=0.9)
+
+        plt.tight_layout()
+        plt.show()
+
+    elif mode == 2:
+        # MODE 2 : Courbe en pointillé pour la moyenne et zone remplie pour le max par test
+        fig, ax = plt.subplots(figsize=(12, 6))
+
+        for nom_algo, res_list in Resultats.items():
+            tests = list(range(len(res_list)))
+            moyennes = [r[0] if r[0] is not None else 0 for r in res_list]
+            maximums = [r[1] if r[1] is not None else 0 for r in res_list]
+
+            # Courbe moyenne en pointillé
+            ligne, = ax.plot(tests, moyennes, linestyle='--', label=f"{nom_algo} (Moyenne)")
+            couleur = ligne.get_color()
+
+            # Courbe max et zone remplie
+            ax.plot(tests, maximums, linestyle='-', color=couleur, alpha=0.8, label=f"{nom_algo} (Maximum)")
+            ax.fill_between(tests, 0, maximums, color=couleur, alpha=0.12)
+
+        ax.set_title("Évolution de l'Idleness (Moyenne et Maximum) sur les tests de graphes")
+        ax.set_xlabel("Numéro du Graphe / Test")
+        ax.set_ylabel("Idleness (secondes)")
+        ax.legend(loc='upper right', bbox_to_anchor=(1.25, 1))
+        plt.grid(True, linestyle='--', alpha=0.6)
+        plt.tight_layout()
+        plt.show()
+#fin AJOUT
+
+def init_modul(module_algo):
+    # AJOUT : réinnitialisation des var glob du fichier emcapsulé
+    if hasattr(module_algo, 'initialise'):
+        module_algo.initialise = False
+    if hasattr(module_algo, 'circuits_agents'):
+        module_algo.circuits_agents.clear()
+    if hasattr(module_algo, 'objectifs_agents'):
+        module_algo.objectifs_agents.clear()
+    if hasattr(module_algo, 'clusters_noeuds'):
+        module_algo.clusters_noeuds.clear()
+
+def comparer_algorithmes(graph, mode):
     fenetre = Tk()
     fenetre.withdraw()
 
@@ -429,11 +572,13 @@ def comparer_algorithmes():
 
         temps_simulation = max(30, len(graphe) / 4)
 
-        for nom_algo, algo in Algos:
+        for nom_algo, module_algo in Algos:
+            init_modul(module_algo)
+
             moyenne, maximum = executer_test(
                 graphe,
                 Positions_depart,
-                algo,
+                module_algo.choisir_destination,  # On passe bien la fonction du module
                 graine=5000 + numero,
                 temps_simulation=temps_simulation
             )
@@ -442,6 +587,7 @@ def comparer_algorithmes():
     print("\nbilan final")
     for nom_algo, _ in Algos:
         afficher_bilan(nom_algo, Resultats[nom_algo])
+    visualiser_resultats(Resultats, graph, mode)
 
 
 # =========================
@@ -470,6 +616,13 @@ def lancer_algo():
         Noeuds = creer_graphe(NB_NOEUDS)
 
     Agents = creer_agents(Noeuds, NB_AGENTS)
+
+    for agent in Agents:
+        print(
+            f"Après init : agent {agent.id}, "
+            f"position={agent.noeud_actuel.id}, "
+            f"destination={agent.destination.id if agent.destination else None}"
+        )
 
     running = True
     while running:
@@ -516,7 +669,148 @@ def lancer_algo():
         print(f"idlenes moy: {moy:.2f}s")
         print(f"idlenes max: {max_t:.2f}s")
 
+def rapport_createur():
+    nb_aleatoires = 5
+    range_nb_agent = [i for i in range(3, 10, 2)]
+    fenetre = Tk()
+    fenetre.withdraw()
+
+    #Choix du dossier contenant les graphes
+    Dossier = filedialog.askdirectory(
+        title="choisir dossier des .graph"
+    )
+    if not Dossier:
+        fenetre.destroy()
+        return
+
+    Fichiers_graphes = sorted(
+        glob.glob(os.path.join(Dossier, "*.graph"))
+    )
+
+    # tu peux en selectioner autant que tu veux mtn
+    Fichiers_algos = filedialog.askopenfilenames(
+        title="choisire les algos python a comparer",
+        filetypes=[("fichiers python", "*.py")],
+        parent=fenetre
+    )
+
+    fenetre.destroy()
+
+    if len(Fichiers_algos) < 2:
+        print("faut au moins 2 fichiez .py pour comparer")
+        return
+
+    Algos = [
+        (os.path.basename(path), charger_algorithme(path, i))
+        for i, path in enumerate(Fichiers_algos)
+    ]
+
+    Jeux_graphes = []
+
+    for chemin in Fichiers_graphes:
+        graphe = ouvrir_graphe(chemin)
+        Jeux_graphes.append((os.path.basename(chemin), graphe))
+
+    for i in range(nb_aleatoires):
+        random.seed(2000 + i)
+        graphe = creer_graphe(NB_NOEUDS)
+        Jeux_graphes.append((f"graphe alea {i + 1}", graphe))
+
+    if not Jeux_graphes:
+        return
+
+    Resultats = {
+        nom: {nb_agents: [] for nb_agents in range_nb_agent}
+        for nom, _ in Algos
+    }
+    Intervalles_par_algo = {
+        nom: [] for nom, _ in Algos
+    }
+
+    for numero, (_, graphe) in enumerate(Jeux_graphes):
+        if not graphe:
+            continue
+
+        random.seed(1000 + numero)
+        Positions_depart = [
+            random.choice(graphe).id
+            for _ in range(max(range_nb_agent))
+        ]
+
+        temps_simulation = max(30, len(graphe) / 4)
+
+        for nb_agents in range_nb_agent:
+            positions_agents = Positions_depart[:nb_agents]
+            for nom_algo, algo in Algos:
+                init_modul(algo)
+                moyenne, maximum, intervalles = executer_test(
+                    graphe,
+                    positions_agents,
+                    algo.choisir_destination,
+                    graine=5000 + numero,
+                    temps_simulation=temps_simulation,
+                    inclure_intervalles=True
+                )
+                Resultats[nom_algo][nb_agents].append((moyenne, maximum))
+                Intervalles_par_algo[nom_algo].extend(intervalles)
+
+    if not any(
+        resultat[0] is not None or resultat[1] is not None
+        for resultats_par_agent in Resultats.values()
+        for resultats in resultats_par_agent.values()
+        for resultat in resultats
+    ):
+        print("Aucun résultat exploitable pour générer les graphiques.")
+        return
+
+    couleurs = plt.get_cmap("turbo", len(Algos))
+    marqueurs = [
+        "o", "s", "^", "D", "v", "P", "X", "*", "<", ">",
+        "1", "2", "3", "4", "8", "p", "h", "H", "+", "x",
+        "d", "|", "_", "."
+    ]
+
+    figure = plt.figure(figsize=(10, 5), constrained_layout=True)
+    grille = figure.add_gridspec(1, 2)
+    axe_max = figure.add_subplot(grille[0, 0])
+    axe_moyenne = figure.add_subplot(grille[0, 1])
+    mesures_graphes = [
+        (axe_max, 1, "Idleness maximale moyenne (s)", "Idleness maximale moyenne"),
+        (axe_moyenne, 0, "Idleness moyenne (s)", "Idleness moyenne")
+    ]
+
+    for axe, indice, etiquette_y, titre in mesures_graphes:
+        for index, (nom_algo, _) in enumerate(Algos):
+            valeurs_x = []
+            valeurs_y = []
+            for nb_agents in range_nb_agent:
+                mesures = []
+                for resultat in Resultats[nom_algo][nb_agents]:
+                    valeur = resultat[indice]
+                    if valeur is not None:
+                        mesures.append(valeur)
+
+                if mesures:
+                    valeurs_x.append(nb_agents)
+                    valeurs_y.append(sum(mesures) / len(mesures))
+
+            axe.plot(
+                valeurs_x,
+                valeurs_y,
+                label=nom_algo,
+                color=couleurs(index),
+                marker=marqueurs[index % len(marqueurs)],
+                linestyle="-"
+            )
+
+        axe.set_title(titre)
+        axe.set_ylabel(etiquette_y)
+        axe.set_xticks(range_nb_agent)
+        axe.grid(True, linestyle="--", alpha=0.5)
+        axe.legend()
+    plt.show()
 
 if __name__ == "__main__":
-    #comparer_algorithmes()
+    #comparer_algorithmes(graph=True, mode=2)
     lancer_algo()
+    #rapport_createur()
