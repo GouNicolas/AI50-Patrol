@@ -403,64 +403,47 @@ def visualiser_resultats(Resultats, graph=False, mode=1):
 
     if mode == 1:
         # MODE 1 : 2 abscisses (Idleness Moyenne et Maximum) avec des échelles séparées (twinx)
-        fig, ax1 = plt.subplots(figsize=(10, 6))
-        ax2 = ax1.twinx()
-
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
         num_algos = len(algos)
-        width = 0.12  #réservation d'espace pour décaler les algos horizontalement
-
-        # Palette de couleurs automatique de matplotlib
         colors = plt.cm.tab10(range(num_algos))
 
         for i, (nom_algo, res_list) in enumerate(Resultats.items()):
             moyennes = [r[0] for r in res_list if r[0] is not None]
             maximums = [r[1] for r in res_list if r[1] is not None]
 
-            if not moyennes or not maximums:
-                continue
-
-            # Statistiques pour l'idleness moyenne
-            m_min = min(moyennes)
-            m_moy = sum(moyennes) / len(moyennes)
-            m_max = max(moyennes)
-
-            # Statistiques pour l'idleness maximum
-            M_min = min(maximums)
-            M_moy = sum(maximums) / len(maximums)
-            M_max = max(maximums)
-
-            # Décalage horizontal pour chaque algorithme pour éviter les superpositions
-            offset = (i - num_algos / 2) * width + width / 2
             col = colors[i]
+            for axe, valeurs, position in (
+                (ax1, moyennes, i),
+                (ax2, maximums, i)
+            ):
+                if valeurs:
+                    axe.scatter(position - 0.15, min(valeurs), color=col, marker='o', s=90, zorder=3)
+                    axe.scatter(position, sum(valeurs) / len(valeurs), color=col, marker='^', s=90, zorder=3)
+                    axe.scatter(position + 0.15, max(valeurs), color=col, marker='s', s=90, zorder=3)
 
-            # --- Tracé sur l'axe de gauche (Idleness Moyenne) à x = 0 + offset ---
-            ax1.scatter([0 + offset], [m_min], color=col, marker='o', s=90, zorder=3)
-            ax1.scatter([0 + offset], [m_moy], color=col, marker='^', s=90, zorder=3)
-            ax1.scatter([0 + offset], [m_max], color=col, marker='s', s=90, zorder=3)
-
-            # --- Tracé sur l'axe de droite (Idleness Maximum) à x = 1 + offset ---
-            ax2.scatter([1 + offset], [M_min], color=col, marker='o', s=90, zorder=3)
-            ax2.scatter([1 + offset], [M_moy], color=col, marker='^', s=90, zorder=3)
-            ax2.scatter([1 + offset], [M_max], color=col, marker='s', s=90, zorder=3)
-
-            # Élément fictif pour la légende des algorithmes
             ax1.plot([], [], color=col, marker='o', linestyle='None', markersize=8, label=nom_algo)
 
-        # Configuration des axes
-        ax1.set_xlim(-0.5, 1.5)
-        ax1.set_xticks([0, 1])
-        ax1.set_xticklabels(['Idleness Moyenne', 'Idleness Maximum'], fontsize=12, fontweight='bold')
+        for axe, titre, etiquette in (
+            (ax1, "Idleness moyenne", "Idleness moyenne (secondes)"),
+            (ax2, "Idleness maximale", "Idleness maximale (secondes)")
+        ):
+            axe.set_xticks(range(len(algos)))
+            axe.set_xticklabels(algos, rotation=30, ha="right")
+            axe.set_ylabel(etiquette)
+            axe.set_title(titre)
+            axe.grid(True, linestyle='--', alpha=0.4)
 
-        ax1.set_ylabel("Échelle - Idleness Moyenne (secondes)", color='tab:blue', fontsize=10)
-        ax2.set_ylabel("Échelle - Idleness Maximum (secondes)", color='tab:orange', fontsize=10)
-
-        ax1.set_title("Comparaison des statistiques d'Idleness\n(Min: ○, Moyen: △, Max: □)", fontsize=13, fontweight='bold')
-        ax1.grid(True, linestyle='--', alpha=0.4)
-
-        # Légende des algorithmes
-        ax1.legend(title="Algorithmes", loc='upper left', framealpha=0.9)
-
-        plt.tight_layout()
+        ax1.legend(title="Algorithmes", loc='best', framealpha=0.9)
+        ax2.legend(
+            handles=[
+                Line2D([], [], color="black", marker="o", linestyle="None", label="Minimum"),
+                Line2D([], [], color="black", marker="^", linestyle="None", label="Moyenne"),
+                Line2D([], [], color="black", marker="s", linestyle="None", label="Maximum")
+            ],
+            title="Statistiques",
+            loc="best"
+        )
+        fig.tight_layout()
         plt.show()
 
     elif mode == 2:
