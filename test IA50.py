@@ -205,6 +205,30 @@ def creer_graphe(nb_noeuds):
         y = random.randint(80, HAUTEUR - 80)
         Noeuds.append(Noeud(i, x, y))
 
+    # RAJOUT : on fait en sorte que chaq point soi accessible
+    noeuds_relies = [Noeuds[0]]
+    noeuds_restants = set(Noeuds[1:])
+
+    while noeuds_restants:
+        meilleur_n = None
+        meilleur_autre = None
+        min_d = float("inf")
+
+        for n in noeuds_restants:
+            for autre in noeuds_relies:
+                d = distance(n, autre)
+                if d < min_d:
+                    min_d = d
+                    meilleur_n = n
+                    meilleur_autre = autre
+
+        poids = round(random.uniform(1.0, 5.0), 1)
+        meilleur_n.liaisons.append(Liaison(meilleur_autre, poids))
+        meilleur_autre.liaisons.append(Liaison(meilleur_n, poids))
+
+        noeuds_relies.append(meilleur_n)
+        noeuds_restants.remove(meilleur_n)
+
     for n in Noeuds:
         Candidats = []
         for autre in Noeuds:
@@ -216,6 +240,9 @@ def creer_graphe(nb_noeuds):
         Candidats.sort(key=lambda item: item[1])
 
         for voisin, dist_visuelle in Candidats[:MAX_VOISINS]:
+            if len(n.liaisons) >= MAX_VOISINS:
+                break
+
             poids = round(random.uniform(1.0, 5.0), 1)
 
             if not any(l.cible == voisin for l in n.liaisons):
