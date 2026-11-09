@@ -657,12 +657,14 @@ def lancer_algo():
 
     Agents = creer_agents(Noeuds, NB_AGENTS)
 
+    """
     for agent in Agents:
         print(
             f"Après init : agent {agent.id}, "
             f"position={agent.noeud_actuel.id}, "
             f"destination={agent.destination.id if agent.destination else None}"
         )
+    """
 
     running = True
     while running:
