@@ -1,0 +1,296 @@
+
+<Graph Name="Hub10" Type="Undirected">
+
+  <Nodes>
+    <Node Position="600,0,0" />
+    <Node Position="485,0,353" />
+    <Node Position="185,0,571" />
+    <Node Position="-185,0,571" />
+    <Node Position="-485,0,353" />
+    <Node Position="-600,0,0" />
+    <Node Position="-485,0,-353" />
+    <Node Position="-185,0,-571" />
+    <Node Position="185,0,-571" />
+    <Node Position="485,0,-353" />
+
+    <Node Position="690,0,0" />
+    <Node Position="673,0,53" />
+    <Node Position="628,0,86" />
+    <Node Position="572,0,86" />
+    <Node Position="527,0,53" />
+    <Node Position="510,0,0" />
+    <Node Position="527,0,-53" />
+    <Node Position="572,0,-86" />
+    <Node Position="628,0,-86" />
+    <Node Position="673,0,-53" />
+
+    <Node Position="558,0,406" />
+    <Node Position="513,0,439" />
+    <Node Position="457,0,439" />
+    <Node Position="412,0,406" />
+    <Node Position="395,0,353" />
+    <Node Position="412,0,300" />
+    <Node Position="457,0,267" />
+    <Node Position="513,0,267" />
+    <Node Position="558,0,300" />
+    <Node Position="575,0,353" />
+
+    <Node Position="213,0,657" />
+    <Node Position="157,0,657" />
+    <Node Position="112,0,624" />
+    <Node Position="95,0,571" />
+    <Node Position="112,0,518" />
+    <Node Position="157,0,485" />
+    <Node Position="213,0,485" />
+    <Node Position="258,0,518" />
+    <Node Position="275,0,571" />
+    <Node Position="258,0,624" />
+
+    <Node Position="-213,0,657" />
+    <Node Position="-258,0,624" />
+    <Node Position="-275,0,571" />
+    <Node Position="-258,0,518" />
+    <Node Position="-213,0,485" />
+    <Node Position="-157,0,485" />
+    <Node Position="-112,0,518" />
+    <Node Position="-95,0,571" />
+    <Node Position="-112,0,624" />
+    <Node Position="-157,0,657" />
+
+    <Node Position="-558,0,406" />
+    <Node Position="-575,0,353" />
+    <Node Position="-558,0,300" />
+    <Node Position="-513,0,267" />
+    <Node Position="-457,0,267" />
+    <Node Position="-412,0,300" />
+    <Node Position="-395,0,353" />
+    <Node Position="-412,0,406" />
+    <Node Position="-457,0,439" />
+    <Node Position="-513,0,439" />
+
+    <Node Position="-690,0,0" />
+    <Node Position="-673,0,-53" />
+    <Node Position="-628,0,-86" />
+    <Node Position="-572,0,-86" />
+    <Node Position="-527,0,-53" />
+    <Node Position="-510,0,0" />
+    <Node Position="-527,0,53" />
+    <Node Position="-572,0,86" />
+    <Node Position="-628,0,86" />
+    <Node Position="-673,0,53" />
+
+    <Node Position="-558,0,-406" />
+    <Node Position="-513,0,-439" />
+    <Node Position="-457,0,-439" />
+    <Node Position="-412,0,-406" />
+    <Node Position="-395,0,-353" />
+    <Node Position="-412,0,-300" />
+    <Node Position="-457,0,-267" />
+    <Node Position="-513,0,-267" />
+    <Node Position="-558,0,-300" />
+    <Node Position="-575,0,-353" />
+
+    <Node Position="-213,0,-657" />
+    <Node Position="-157,0,-657" />
+    <Node Position="-112,0,-624" />
+    <Node Position="-95,0,-571" />
+    <Node Position="-112,0,-518" />
+    <Node Position="-157,0,-485" />
+    <Node Position="-213,0,-485" />
+    <Node Position="-258,0,-518" />
+    <Node Position="-275,0,-571" />
+    <Node Position="-258,0,-624" />
+
+    <Node Position="213,0,-657" />
+    <Node Position="258,0,-624" />
+    <Node Position="275,0,-571" />
+    <Node Position="258,0,-518" />
+    <Node Position="213,0,-485" />
+    <Node Position="157,0,-485" />
+    <Node Position="112,0,-518" />
+    <Node Position="95,0,-571" />
+    <Node Position="112,0,-624" />
+    <Node Position="157,0,-657" />
+
+    <Node Position="558,0,-406" />
+    <Node Position="575,0,-353" />
+    <Node Position="558,0,-300" />
+    <Node Position="513,0,-267" />
+    <Node Position="457,0,-267" />
+    <Node Position="412,0,-300" />
+    <Node Position="395,0,-353" />
+    <Node Position="412,0,-406" />
+    <Node Position="457,0,-439" />
+    <Node Position="513,0,-439" />
+  </Nodes>
+
+  <Edges>
+    <!-- Connexions entre les 10 hubs : poids 1000 -->
+    <Edge Indices="0,1" Weight="1000" />
+    <Edge Indices="0,2" Weight="1000" />
+    <Edge Indices="0,3" Weight="1000" />
+    <Edge Indices="0,4" Weight="1000" />
+    <Edge Indices="0,5" Weight="1000" />
+    <Edge Indices="0,6" Weight="1000" />
+    <Edge Indices="0,7" Weight="1000" />
+    <Edge Indices="0,8" Weight="1000" />
+    <Edge Indices="0,9" Weight="1000" />
+    <Edge Indices="1,2" Weight="1000" />
+    <Edge Indices="1,3" Weight="1000" />
+    <Edge Indices="1,4" Weight="1000" />
+    <Edge Indices="1,5" Weight="1000" />
+    <Edge Indices="1,6" Weight="1000" />
+    <Edge Indices="1,7" Weight="1000" />
+    <Edge Indices="1,8" Weight="1000" />
+    <Edge Indices="1,9" Weight="1000" />
+    <Edge Indices="2,3" Weight="1000" />
+    <Edge Indices="2,4" Weight="1000" />
+    <Edge Indices="2,5" Weight="1000" />
+    <Edge Indices="2,6" Weight="1000" />
+    <Edge Indices="2,7" Weight="1000" />
+    <Edge Indices="2,8" Weight="1000" />
+    <Edge Indices="2,9" Weight="1000" />
+    <Edge Indices="3,4" Weight="1000" />
+    <Edge Indices="3,5" Weight="1000" />
+    <Edge Indices="3,6" Weight="1000" />
+    <Edge Indices="3,7" Weight="1000" />
+    <Edge Indices="3,8" Weight="1000" />
+    <Edge Indices="3,9" Weight="1000" />
+    <Edge Indices="4,5" Weight="1000" />
+    <Edge Indices="4,6" Weight="1000" />
+    <Edge Indices="4,7" Weight="1000" />
+    <Edge Indices="4,8" Weight="1000" />
+    <Edge Indices="4,9" Weight="1000" />
+    <Edge Indices="5,6" Weight="1000" />
+    <Edge Indices="5,7" Weight="1000" />
+    <Edge Indices="5,8" Weight="1000" />
+    <Edge Indices="5,9" Weight="1000" />
+    <Edge Indices="6,7" Weight="1000" />
+    <Edge Indices="6,8" Weight="1000" />
+    <Edge Indices="6,9" Weight="1000" />
+    <Edge Indices="7,8" Weight="1000" />
+    <Edge Indices="7,9" Weight="1000" />
+    <Edge Indices="8,9" Weight="1000" />
+
+    <!-- Hub 0 -->
+    <Edge Indices="0,10" />
+    <Edge Indices="0,11" />
+    <Edge Indices="0,12" />
+    <Edge Indices="0,13" />
+    <Edge Indices="0,14" />
+    <Edge Indices="0,15" />
+    <Edge Indices="0,16" />
+    <Edge Indices="0,17" />
+    <Edge Indices="0,18" />
+    <Edge Indices="0,19" />
+
+    <!-- Hub 1 -->
+    <Edge Indices="1,20" />
+    <Edge Indices="1,21" />
+    <Edge Indices="1,22" />
+    <Edge Indices="1,23" />
+    <Edge Indices="1,24" />
+    <Edge Indices="1,25" />
+    <Edge Indices="1,26" />
+    <Edge Indices="1,27" />
+    <Edge Indices="1,28" />
+    <Edge Indices="1,29" />
+
+    <!-- Hub 2 -->
+    <Edge Indices="2,30" />
+    <Edge Indices="2,31" />
+    <Edge Indices="2,32" />
+    <Edge Indices="2,33" />
+    <Edge Indices="2,34" />
+    <Edge Indices="2,35" />
+    <Edge Indices="2,36" />
+    <Edge Indices="2,37" />
+    <Edge Indices="2,38" />
+    <Edge Indices="2,39" />
+
+    <!-- Hub 3 -->
+    <Edge Indices="3,40" />
+    <Edge Indices="3,41" />
+    <Edge Indices="3,42" />
+    <Edge Indices="3,43" />
+    <Edge Indices="3,44" />
+    <Edge Indices="3,45" />
+    <Edge Indices="3,46" />
+    <Edge Indices="3,47" />
+    <Edge Indices="3,48" />
+    <Edge Indices="3,49" />
+
+    <!-- Hub 4 -->
+    <Edge Indices="4,50" />
+    <Edge Indices="4,51" />
+    <Edge Indices="4,52" />
+    <Edge Indices="4,53" />
+    <Edge Indices="4,54" />
+    <Edge Indices="4,55" />
+    <Edge Indices="4,56" />
+    <Edge Indices="4,57" />
+    <Edge Indices="4,58" />
+    <Edge Indices="4,59" />
+
+    <!-- Hub 5 -->
+    <Edge Indices="5,60" />
+    <Edge Indices="5,61" />
+    <Edge Indices="5,62" />
+    <Edge Indices="5,63" />
+    <Edge Indices="5,64" />
+    <Edge Indices="5,65" />
+    <Edge Indices="5,66" />
+    <Edge Indices="5,67" />
+    <Edge Indices="5,68" />
+    <Edge Indices="5,69" />
+
+    <!-- Hub 6 -->
+    <Edge Indices="6,70" />
+    <Edge Indices="6,71" />
+    <Edge Indices="6,72" />
+    <Edge Indices="6,73" />
+    <Edge Indices="6,74" />
+    <Edge Indices="6,75" />
+    <Edge Indices="6,76" />
+    <Edge Indices="6,77" />
+    <Edge Indices="6,78" />
+    <Edge Indices="6,79" />
+
+    <!-- Hub 7 -->
+    <Edge Indices="7,80" />
+    <Edge Indices="7,81" />
+    <Edge Indices="7,82" />
+    <Edge Indices="7,83" />
+    <Edge Indices="7,84" />
+    <Edge Indices="7,85" />
+    <Edge Indices="7,86" />
+    <Edge Indices="7,87" />
+    <Edge Indices="7,88" />
+    <Edge Indices="7,89" />
+
+    <!-- Hub 8 -->
+    <Edge Indices="8,90" />
+    <Edge Indices="8,91" />
+    <Edge Indices="8,92" />
+    <Edge Indices="8,93" />
+    <Edge Indices="8,94" />
+    <Edge Indices="8,95" />
+    <Edge Indices="8,96" />
+    <Edge Indices="8,97" />
+    <Edge Indices="8,98" />
+    <Edge Indices="8,99" />
+
+    <!-- Hub 9 -->
+    <Edge Indices="9,100" />
+    <Edge Indices="9,101" />
+    <Edge Indices="9,102" />
+    <Edge Indices="9,103" />
+    <Edge Indices="9,104" />
+    <Edge Indices="9,105" />
+    <Edge Indices="9,106" />
+    <Edge Indices="9,107" />
+    <Edge Indices="9,108" />
+    <Edge Indices="9,109" />
+  </Edges>
+
+</Graph>
