@@ -152,7 +152,13 @@ def ouvrir_graphe(chemin):
 
             i, j = valeurs
 
-            poids = math.dist(Positions[i], Positions[j])
+            # RAJOUT : si poid dans fichier on l'utilise
+            poids_attr = element.get("Weight")
+            if poids_attr is not None:
+                poids = float(poids_attr.strip())
+            else:
+                poids = math.dist(Positions[i], Positions[j])
+
             poids = max(poids, 0.001)
 
             Noeuds[i].liaisons.append(Liaison(Noeuds[j], poids))
