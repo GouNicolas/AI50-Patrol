@@ -447,8 +447,8 @@ def afficher_bilan(nom, resultats):
 #AJOUT
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-
-def visualiser_resultats(Resultats, graph=False, mode=1):
+#RAJOUT : affichage des nom des graf
+def visualiser_resultats(Resultats, noms_graphes=False, graph=False, mode=1):
     if not graph:
         return
 
@@ -515,6 +515,9 @@ def visualiser_resultats(Resultats, graph=False, mode=1):
             # Courbe max et zone remplie
             ax.plot(tests, maximums, linestyle='-', color=couleur, alpha=0.8, label=f"{nom_algo} (Maximum)")
             ax.fill_between(tests, 0, maximums, color=couleur, alpha=0.12)
+
+            ax.set_xticks(tests)
+            ax.set_xticklabels(noms_graphes, rotation=30, ha='right')
 
         ax.set_title("Évolution de l'Idleness (Moyenne et Maximum) sur les tests de graphes")
         ax.set_xlabel("Numéro du Graphe / Test")
@@ -623,7 +626,8 @@ def comparer_algorithmes(graph, mode):
     print("\nbilan final")
     for nom_algo, _ in Algos:
         afficher_bilan(nom_algo, Resultats[nom_algo])
-    visualiser_resultats(Resultats, graph, mode)
+    Noms_graphes = [nom for nom, _ in Jeux_graphes]
+    visualiser_resultats(Resultats, noms_graphes=Noms_graphes, graph=graph, mode=mode)
 
 
 # =========================
