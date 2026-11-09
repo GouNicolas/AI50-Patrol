@@ -8,6 +8,8 @@ import os
 import glob
 import importlib.util
 
+import colorsys
+
 from choix import choisir_destination
 
 # config de la simu
@@ -28,6 +30,7 @@ TEMPS_MAX = 10 # temps pr passer du vert au rouge
 
 VITESSE_AGENTS = 10
 
+derniers_passages_liaisons = {}
 
 class Liaison:
     def __init__(self, noeud_cible, poids):
@@ -57,6 +60,12 @@ class Agent:
         self.y = noeud_depart.y
         self.vitesse = 10
 
+        #RAJOUT : color les agents
+        nonbre_or = 0.618033988749895
+        teinte = (id * nonbre_or) % 1.0
+        r, g, b = colorsys.hsv_to_rgb(teinte, 0.9, 1.0)
+        self.couleur = (int(r * 255), int(g * 255), int(b * 255))
+
         self.temps_trajet_total = 0
         self.temps_trajet_ecoule = 0
         self.noeud_depart_trajet = noeud_depart
@@ -75,6 +84,11 @@ class Agent:
         self.y = self.noeud_depart_trajet.y + (self.destination.y - self.noeud_depart_trajet.y) * ratio
 
         if ratio >= 1.0:
+            #RAJOU : color ls arrete
+            global derniers_passages_liaisons
+            cle_arc = tuple(sorted([self.noeud_depart_trajet.id, self.destination.id]))
+            derniers_passages_liaisons[cle_arc] = self.couleur
+
             self.x, self.y = self.destination.x, self.destination.y
             self.noeud_actuel = self.destination
 
@@ -212,19 +226,25 @@ def creer_graphe(nb_noeuds):
     return Noeuds
 
 
-def afficher_liaisons(screen, noeuds):
-    Arcs_dessines = set()
+#RAJOUT modifier couleur agent
+def afficher_liaisons(screen, noeuds, agents):
+    Arcs_dessines  = set()
+
     for n in noeuds:
         for l in n.liaisons:
             cle = tuple(sorted([n.id, l.cible.id]))
-            if cle not in Arcs_dessines:
-                pygame.draw.line(screen, (60, 60, 60), n.position(), l.cible.position(), 1)
-                Arcs_dessines.add(cle)
+            if cle not in Arcs_dessines :
+                # modif en fonc de l'agent
+                couleur_arc = derniers_passages_liaisons.get(cle, (60, 60, 60))
+                epaisseur = 2 if cle in derniers_passages_liaisons else 1
+
+                pygame.draw.line(screen, couleur_arc, n.position(), l.cible.position(), epaisseur)
+                Arcs_dessines .add(cle)
 
 
-def afficher_graphe(screen, noeuds, font):
+def afficher_graphe(screen, noeuds, agents, font):
     if AFFICHER_LIAISONS:
-        afficher_liaisons(screen, noeuds)
+        afficher_liaisons(screen, noeuds, agents)
 
     for n in noeuds:
         ratio = min(n.temps_non_visite / TEMPS_MAX, 1.0)
@@ -241,7 +261,7 @@ def afficher_graphe(screen, noeuds, font):
 def afficher_agents(screen, agents, font):
     for a in agents:
         pos = (int(a.x), int(a.y))
-        pygame.draw.circle(screen, (50, 120, 255), pos, RAYON_AGENT)
+        pygame.draw.circle(screen, a.couleur, pos, RAYON_AGENT)
 
         txt = font.render(f"a{a.id}", True, (255, 255, 255))
         screen.blit(txt, (a.x + 10, a.y))
@@ -651,7 +671,7 @@ def lancer_algo():
             a.avancer(dt)
 
         screen.fill((25, 25, 25))
-        afficher_graphe(screen, Noeuds, font_noeuds)
+        afficher_graphe(screen, Noeuds, Agents, font_noeuds)
         afficher_agents(screen, Agents, font_agents)
 
         pygame.display.flip()
