@@ -50,6 +50,33 @@ class Noeud:
     def position(self):
         return self.x, self.y
 
+def affichage_stat_agent(L):
+    for k in range(10):
+
+        print(k)
+        print("moy : ", statistics.mean(L[k]))
+        print("med : ", statistics.median(L[k]))
+        print("max : ", max(L[k]))
+        print("min : ", min(L[k]))
+
+
+        plt.plot(L[k], marker='o', linestyle='-', color='b', label='Valeurs')
+
+        # 2. Personnaliser le graphique
+        plt.title("Visualisation des valeurs de la liste")
+        plt.xlabel("Index (Position dans la liste)")
+        plt.ylabel("Valeurs / Notes")
+        plt.grid(True) # Ajoute un quadrillage de fond
+        plt.legend()
+
+        # 3. Afficher le graphique à l'écran
+        plt.show()
+
+        print()
+
+tested = 0
+INFO_test = [[], [], [], [], [], [], [], [], [], []]
+affichage_stat = False
 
 class Agent:
     def __init__(self, id, noeud_depart):
@@ -84,6 +111,15 @@ class Agent:
         self.y = self.noeud_depart_trajet.y + (self.destination.y - self.noeud_depart_trajet.y) * ratio
 
         if ratio >= 1.0:
+            global affichage_stat, tested, INFO_test
+            if affichage_stat:
+                tested += 1
+                INFO_test[self.id].append(self.destination.temps_non_visite)
+                if tested %2000 == 0:
+                    print(INFO_test)
+
+
+
             #RAJOU : color ls arrete
             global derniers_passages_liaisons
             cle_arc = tuple(sorted([self.noeud_depart_trajet.id, self.destination.id]))
