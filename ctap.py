@@ -12,6 +12,11 @@ EXECUTION_KMEANS = 10
 
 def _dijkstra(depart, but):
     # plus court chemin, renvoie le PREMIER noeud a rejoindre (un saut)
+    if depart is None or but is None:
+        return None
+    if depart.id == but.id:
+        return None
+
     prec = {}
     dist = {depart.id: 0}
     file = [(0, next(_cpt), depart)]
@@ -19,9 +24,9 @@ def _dijkstra(depart, but):
         d, _, n = heapq.heappop(file)
         if d > dist.get(n.id, float("inf")):
             continue
-        if n is but:
+        if n.id == but.id:
             chemin = [but]
-            while chemin[-1] is not depart:
+            while chemin[-1].id != depart.id:
                 chemin.append(prec[chemin[-1].id])
             return chemin[-2]
         for l in n.liaisons:
@@ -32,6 +37,7 @@ def _dijkstra(depart, but):
                 prec[l.cible.id] = n
                 element = (nouvelle_distance, next(_cpt), l.cible)
                 heapq.heappush(file, element)
+    return None
 
 
 def _init(agents):
@@ -91,6 +97,10 @@ def choisir_destination(self, agents, TEMPS_SIMULATION):
             reserve.add(agent.destination.id)
 
     curseur = self.noeud_actuel
+    if curseur is None:
+        self.destination = None
+        return
+
     noeuds_disponibles = []
     for noeud in _clusters[self.id]:
         if noeud.id not in reserve:
@@ -102,11 +112,25 @@ def choisir_destination(self, agents, TEMPS_SIMULATION):
         but = None
 
     if but is None or but is curseur:
+        if not curseur.liaisons:
+            self.destination = None
+            return
         cible = random.choice(curseur.liaisons).cible
     else:
         cible = _dijkstra(curseur, but)
 
-    liaison = next(l for l in curseur.liaisons if l.cible is cible)
+    if cible is None:
+        self.destination = None
+        return
+
+    liaison = next(
+        (l for l in curseur.liaisons if l.cible.id == cible.id),
+        None
+    )
+    if liaison is None:
+        self.destination = None
+        return
+
     self.destination, self.noeud_depart_trajet = cible, curseur
     self.temps_trajet_total = liaison.poids / self.vitesse
     self.temps_trajet_ecoule = 0.0
