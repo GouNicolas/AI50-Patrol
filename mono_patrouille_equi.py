@@ -3,81 +3,81 @@ import math
 import heapq
 import itertools
 
-# circuit unique partage par tou agent
-Circuit_global = []
-Objectifs_agent = {}
-Initialise = False
+# circuit unique partage par tou les agent
+circuit_global = []
+objectifs_agents = {}
+initialise = False
 
 
-def initialisation(Agent_liste):
-    global Circuit_global, Objectifs_agent, Initialise
+def initialisation(agents):
+    global circuit_global, objectifs_agents, initialise
 
-    Circuit_global = []
-    Objectifs_agent = {}
-    Initialise = False
+    circuit_global = []
+    objectifs_agents = {}
+    initialise = False
 
-    if not Agent_liste:
+    if not agents:
         return
 
-    # 1. recup de tou noeud accessible depui agent
-    Tous_noeud = set()
-    File = deque(
-        a.noeud_actuel for a in Agent_liste
+    # 1. recup de tou les noeud accessible depuis les agent
+    tous_noeuds = set()
+    file = deque(
+        a.noeud_actuel for a in agents
         if a.noeud_actuel is not None
     )
 
-    while File:
-        noeud = File.popleft()
+    while file:
+        noeud = file.popleft()
 
-        if noeud in Tous_noeud:
+        if noeud in tous_noeuds:
             continue
 
-        Tous_noeud.add(noeud)
+        tous_noeuds.add(noeud)
 
-        for l in noeud.liaison:
-            if l.cible not in Tous_noeud:
-                File.append(l.cible)
+        for l in noeud.liaisons:
+            if l.cible not in tous_noeuds:
+                file.append(l.cible)
 
-    Noeud_liste = list(Tous_noeud)
+    noeuds = list(tous_noeuds)
 
-    if not Noeud_liste:
+    if not noeuds:
         return
 
-    if len(Agent_liste) > len(Noeud_liste):
-        print("attension : plu d'agent ke de noeud")
+    if len(agents) > len(noeuds):
+        print("attension : plus d'agent que de noeud")
 
-    # 2. calcul plus cour chemin avec dijkstra pr tt graphe
-    Distances = {}
-    Chemins = {}
-    Compteur = itertools.count()
+    # 2. calcul des plus court chemin avec dijkstra pour tout le graphe
+    distances = {}
+    chemins = {}
+    compteur = itertools.count()
 
-    for origine in Noeud_liste:
+    for origine in noeuds:
         dist = {origine: 0}
         precedent = {}
-        File_d = [(0, next(Compteur), origine)]
+        file_d = [(0, next(compteur), origine)]
 
-        while File_d:
-            cout, _, noeud = heapq.heappop(File_d)
+        while file_d:
+            cout, _, noeud = heapq.heappop(file_d)
 
             if cout > dist[noeud]:
                 continue
 
-            for l in noeud.liaison:
+            for l in noeud.liaisons:
                 voisin = l.cible
-                nouveau_cout = cout + l.poid
+                nouveau_cout = cout + l.poids
 
                 if nouveau_cout < dist.get(voisin, float("inf")):
                     dist[voisin] = nouveau_cout
                     precedent[voisin] = noeud
                     heapq.heappush(
-                        File_d,
-                        (nouveau_cout, next(Compteur), voisin)
+                        file_d,
+                        (nouveau_cout, next(compteur), voisin)
                     )
 
-        Distances[origine] = dist
-        Chemins[origine] = {}
+        distances[origine] = dist
+        chemins[origine] = {}
 
-        for arrivee in Noeud_liste:
+        for arrivee in noeuds:
             if arrivee not in dist:
                 continue
 
@@ -89,128 +89,133 @@ def initialisation(Agent_liste):
                 chemin.append(courant)
 
             chemin.reverse()
-            Chemins[origine][arrivee] = chemin
+            chemins[origine][arrivee] = chemin
 
-    # 3. tournee tsp globale par plus proche voisin
-    Depart_principal = next(
-        (a.noeud_actuel for a in Agent_liste if a.noeud_actuel in Tous_noeud),
-        Noeud_liste[0]
+    # 3. tournee TSP globale par plus proche voisin
+    depart_principal = next(
+        (a.noeud_actuel for a in agents if a.noeud_actuel in tous_noeuds),
+        noeuds[0]
     )
 
-    Non_visite = set(Noeud_liste)
-    Non_visite.remove(Depart_principal)
-    Tour = [Depart_principal]
-    courant = Depart_principal
+    non_visites = set(noeuds)
+    non_visites.remove(depart_principal)
+    tour = [depart_principal]
+    courant = depart_principal
 
-    while Non_visite:
+    while non_visites:
         suivant = min(
-            Non_visite,
-            key=lambda n: Distances[courant].get(n, float("inf"))
+            non_visites,
+            key=lambda n: distances[courant].get(n, float("inf"))
         )
-        Tour.append(suivant)
-        Non_visite.remove(suivant)
+        tour.append(suivant)
+        non_visites.remove(suivant)
         courant = suivant
 
     # opti 2-opt sur le grand tour
-    Amelioration = True
-    while Amelioration:
-        Amelioration = False
-        n = len(Tour)
+    amelioration = True
+    while amelioration:
+        amelioration = False
+        n = len(tour)
 
         for i in range(1, n - 1):
             for j in range(i + 1, n):
-                a = Tour[i - 1]
-                b = Tour[i]
-                c = Tour[j]
-                d = Tour[(j + 1) % n]
+                a = tour[i - 1]
+                b = tour[i]
+                c = tour[j]
+                d = tour[(j + 1) % n]
 
-                ancien = Distances[a].get(b, float("inf")) + Distances[c].get(d, float("inf"))
-                nouveau = Distances[a].get(c, float("inf")) + Distances[b].get(d, float("inf"))
+                ancien = distances[a].get(b, float("inf")) + distances[c].get(d, float("inf"))
+                nouveau = distances[a].get(c, float("inf")) + distances[b].get(d, float("inf"))
 
                 if nouveau < ancien:
-                    Tour[i:j + 1] = reversed(Tour[i:j + 1])
-                    Amelioration = True
+                    tour[i:j + 1] = reversed(tour[i:j + 1])
+                    amelioration = True
 
-    # 4. dev de boucle avec refermeture propre
-    Parcours = []
+    # 4. developpement de la boucle avec refermeture propre
+    parcours = []
 
-    for i in range(len(Tour)):
-        origine = Tour[i]
-        arrivee = Tour[(i + 1) % len(Tour)]
+    for i in range(len(tour)):
+        origine = tour[i]
+        arrivee = tour[(i + 1) % len(tour)]
 
-        chemin = Chemins[origine].get(arrivee)
+        chemin = chemins[origine].get(arrivee)
         if not chemin:
             chemin = [origine, arrivee]
 
         if i == 0:
-            Parcours.extend(chemin)
+            parcours.extend(chemin)
         else:
-            Parcours.extend(chemin[1:])
+            parcours.extend(chemin[1:])
 
-    Circuit_global = Parcours
+    circuit_global = parcours
 
-    # 5. calcul segment et longueur totale circuit pr espacement proportionnel au poid
-    N_etape = len(Circuit_global)
-    Segments = []
-    Longueur_totale = 0.0
+    # 5. calcul des segments et de la longueur totale du circuit pour un espacement 100% proportionnel au poid
+    n_etapes = len(circuit_global)
+    segments = []
+    longueur_totale = 0.0
 
-    for j in range(N_etape):
-        u = Circuit_global[j]
-        v = Circuit_global[(j + 1) % N_etape]
+    for j in range(n_etapes):
+        u = circuit_global[j]
+        v = circuit_global[(j + 1) % n_etapes]
 
-        liaison = next((l for l in u.liaison if l.cible == v), None)
-        poid = liaison.poid if liaison else math.dist((u.x, u.y), (v.x, v.y))
+        # recherche du poid reel de la liaison
+        liaison = next((l for l in u.liaisons if l.cible == v), None)
+        poids = liaison.poids if liaison else math.dist((u.x, u.y), (v.x, v.y))
 
-        Segments.append((j, u, v, poid, Longueur_totale))
-        Longueur_totale += poid
+        segments.append((j, u, v, poids, longueur_totale))
+        longueur_totale += poids
 
-    Nb_agent = len(Agent_liste)
+    nb_agents = len(agents)
 
-    for i, agent in enumerate(Agent_liste):
-        Distance_cible = (i * Longueur_totale) / Nb_agent
+    for i, agent in enumerate(agents):
+        # distance cible de cet agent le long du circuit
+        distance_cible = (i * longueur_totale) / nb_agents
 
-        Segment_choisi = Segments[-1]
-        for seg in Segments:
-            j, u, v, poid, Start_dist = seg
-            if Start_dist <= Distance_cible < Start_dist + poid:
-                Segment_choisi = seg
+        # trouver le segment exact ou se trouve cette distance
+        segment_choisi = segments[-1]
+        for seg in segments:
+            j, u, v, poids, start_dist = seg
+            if start_dist <= distance_cible < start_dist + poids:
+                segment_choisi = seg
                 break
 
-        j, u, v, poid, Start_dist = Segment_choisi
-        Reste = Distance_cible - Start_dist
-        Ratio = (Reste / poid) if poid > 0 else 0.0
+        j, u, v, poids, start_dist = segment_choisi
+        reste = distance_cible - start_dist
+        ratio = (reste / poids) if poids > 0 else 0.0
 
-        Objectifs_agent[agent.id] = (j + 1) % N_etape
+        # objectif suivant dans le circuit
+        objectifs_agents[agent.id] = (j + 1) % n_etapes
 
+        # positionnement direct sur l'arete entre u et v
         agent.noeud_actuel = u
         agent.noeud_depart_trajet = u
         agent.destination = v
 
-        Liaison_exacte = next((l for l in u.liaison if l.cible == v), None)
-        Poid_reel = Liaison_exacte.poid if Liaison_exacte else poid
+        liaison_exacte = next((l for l in u.liaisons if l.cible == v), None)
+        poids_reel = liaison_exacte.poids if liaison_exacte else poids
 
         agent.temps_trajet_total = (
-            Poid_reel / agent.vitesse
+            poids_reel / agent.vitesse
             if agent.vitesse > 0
             else float("inf")
         )
-        agent.temps_trajet_ecoule = Ratio * agent.temps_trajet_total
-        agent.x = u.x + (v.x - u.x) * Ratio
-        agent.y = u.y + (v.y - u.y) * Ratio
+        agent.temps_trajet_ecoule = ratio * agent.temps_trajet_total
+        agent.x = u.x + (v.x - u.x) * ratio
+        agent.y = u.y + (v.y - u.y) * ratio
 
-    Initialise = True
+    initialise = True
 
     print("\napres init circuit unique distance reelle :")
-    print("longueur totale circuit :", round(Longueur_totale, 2))
-    print("nb agent place sur arete :", Nb_agent)
-    print("init :", Initialise)
+    print("longueur totale du circuit :", round(longueur_totale, 2))
+    print("nb agents places sur aretes :", nb_agents)
+    print("init :", initialise)
 
 
-def choisir_destination(agent, Agent_liste, TEMPS_SIMULATION):
-    global Initialise
+def choisir_destination(agent, agents, TEMPS_SIMULATION):
+    global initialise
 
-    if not Initialise:
-        initialisation(Agent_liste)
+    if not initialise:
+        initialisation(agents)
 
     if agent.destination is not None:
         return
@@ -220,57 +225,62 @@ def choisir_destination(agent, Agent_liste, TEMPS_SIMULATION):
     if noeud_actuel is None:
         return
 
-    if len(Circuit_global) < 2:
+    if len(circuit_global) < 2:
         return
 
-    idx = Objectifs_agent.get(agent.id, 1)
-    N_etape = len(Circuit_global)
+    idx = objectifs_agents.get(agent.id, 1)
+    nb_etapes = len(circuit_global)
 
-    if idx >= N_etape:
+    if idx >= nb_etapes:
         idx = 0
 
-    cible = Circuit_global[idx]
+    cible = circuit_global[idx]
 
+    # securite : si la cible est egale au noeud actuel, on avance direct l'index
     if noeud_actuel == cible:
-        idx = (idx + 1) % N_etape
-        cible = Circuit_global[idx]
+        idx = (idx + 1) % nb_etapes
+        cible = circuit_global[idx]
 
+    # si l'agent est arrive a sa cible, passer a l'etape suivante sur le circuit global
     if noeud_actuel == cible:
-        idx = (idx + 1) % N_etape
-        cible = Circuit_global[idx]
+        idx = (idx + 1) % nb_etapes
+        cible = circuit_global[idx]
 
-    Liaison_trouvee = next(
-        (l for l in noeud_actuel.liaison if l.cible == cible),
+    # verif si cible accessible direct
+    liaison_trouvee = next(
+        (l for l in noeud_actuel.liaisons if l.cible == cible),
         None
     )
 
-    if Liaison_trouvee is None:
-        for offset in range(1, N_etape):
-            test_idx = (idx + offset) % N_etape
-            test_cible = Circuit_global[test_idx]
-            Liaison_trouvee = next(
-                (l for l in noeud_actuel.liaison if l.cible == test_cible),
+    # si pas de liaison directe dans le circuit, on cherche un voisin direct du circuit pour avancer sans bloquer
+    if liaison_trouvee is None:
+        # on cherche dans le circuit l'index le plus proche qui a une liaison directe
+        for offset in range(1, nb_etapes):
+            test_idx = (idx + offset) % nb_etapes
+            test_cible = circuit_global[test_idx]
+            liaison_trouvee = next(
+                (l for l in noeud_actuel.liaisons if l.cible == test_cible),
                 None
             )
-            if Liaison_trouvee is not None:
+            if liaison_trouvee is not None:
                 idx = test_idx
                 cible = test_cible
                 break
 
-    if Liaison_trouvee is None:
+    if liaison_trouvee is None:
         print(
-            f"[test blocage] agent {agent.id} vrémen bloke : "
+            f"[test blocage] agent {agent.id} vraiment bloque : "
             f"pos={noeud_actuel.id}, "
             f"cible={cible.id}, idx={idx}"
         )
         return
 
-    Objectifs_agent[agent.id] = (idx + 1) % N_etape
+    objectifs_agents[agent.id] = (idx + 1) % nb_etapes
 
     agent.destination = cible
     agent.noeud_depart_trajet = noeud_actuel
     agent.temps_trajet_total = (
-        Liaison_trouvee.poid / agent.vitesse
+        liaison_trouvee.poids / agent.vitesse
         if agent.vitesse > 0
         else float("inf")
     )
