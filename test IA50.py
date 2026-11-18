@@ -9,6 +9,7 @@ import glob
 import importlib.util
 
 import colorsys
+import statistics
 
 from choix import choisir_destination
 
@@ -115,8 +116,8 @@ class Agent:
             if affichage_stat:
                 tested += 1
                 INFO_test[self.id].append(self.destination.temps_non_visite)
-                if tested %2000 == 0:
-                    print(INFO_test)
+                if tested %1500 == 0:
+                    affichage_stat_agent(INFO_test)
 
 
 
