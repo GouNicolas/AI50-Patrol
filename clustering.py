@@ -50,7 +50,7 @@ def initialisation(agents):
         return
 
     if len(agents) > len(noeuds):
-        print("attension : plus d'agent que de noeud")
+        print("attention : plus d'agent que de noeud")
 
     # 2. choix des point de depart eloigne
     nb_clusters = min(len(agents), len(noeuds))
@@ -338,45 +338,3 @@ def choisir_destination(agent, agents, TEMPS_SIMULATION):
         else float("inf")
     )
     agent.temps_trajet_ecoule = 0.0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

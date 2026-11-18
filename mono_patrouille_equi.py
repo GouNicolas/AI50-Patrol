@@ -44,7 +44,7 @@ def initialisation(agents):
         return
 
     if len(agents) > len(noeuds):
-        print("attension : plus d'agent que de noeud")
+        print("attention : plus d'agent que de noeud")
 
     # 2. calcul des plus court chemin avec dijkstra pour tout le graphe
     distances = {}

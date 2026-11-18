@@ -49,7 +49,7 @@ def initialisation(ag_lst):
 
     nb_ag = len(ag_lst)
     if nb_ag > len(nd_lst):
-        print("attension : plu d'agent ke de noeud")
+        print("attention : plu d'agent ke de noeud")
 
     ag_tries = sorted(ag_lst, key=lambda a: a.id)
 
